@@ -1,6 +1,6 @@
 class Game extends Character{
   //캐릭터
-  Character();
+  Character();3
   //몬스터리스트
   List<Monster> monsterList = [];
   //처치된 몬스터 개수
