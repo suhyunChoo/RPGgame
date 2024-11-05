@@ -1,0 +1,2 @@
+hp,power,defence
+100,10,5
