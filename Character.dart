@@ -1,6 +1,4 @@
 import 'Monster.dart';
-import 'game.dart';
-import 'rpgGame.dart';
 
 class Character{
   String name = '';
@@ -9,23 +7,23 @@ class Character{
   //공격력
   int power;
   //방어력
-  int defence;
+  int defense;
 
-  Character({this.name = 'user1', this.hp = 0, this.power = 0, this.defence = 0});
+  Character({this.name = 'user1', this.hp = 0, this.power = 0, this.defense = 0});
 
   //공격
   void attackMonster(Monster monster){
     print('>> $name이(가) ${monster.monName}에게 $power의 데미지를 입혔습니다.');
-    monster.mHp -= power + monster.mDefence;
+    monster.mHp -= power + monster.mDefense;
   }
   //방어
   void defend(Monster monster) async{
     print('>> $name이(가) 방어태세를 취하여 ${monster.mPower} 만큼의 체력을 얻었습니다.');
     hp+=monster.mPower;
   }
-  //상태출력 체력,공력력,방어력 출력
-  void showStatus(){
-    print('[$name - 체력:$hp 공격력:$power 방어력:$defence]');
+  //상태출력 체력,공격력,방어력 출력
+  void showState(){
+    print('[$name - 체력:$hp 공격력:$power 방어력:$defense]');
   }
 
   //아이템 사용 여부를 확인하는 변수와 아이템 사용을 처리하는 함수
@@ -38,8 +36,5 @@ class Character{
     }else{
       print('아이템을 이미 사용했습니다. 더 이상 사용할 수 없습니다.');
     }
-
   }
-
-
 }

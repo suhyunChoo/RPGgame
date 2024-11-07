@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 import 'Character.dart';
 import 'Monster.dart';
-import 'rpgGame.dart';
 
 class Game {
 
@@ -20,9 +19,8 @@ class Game {
   //게임 시작 메서드
   Future<void> startGame() async{
 
-    print('게임을 시작합니다!');
-    print('\n');
-    character.showStatus();
+    print('게임을 시작합니다!\n');
+    character.showState();
 
     await battle();
     
@@ -32,7 +30,7 @@ class Game {
   Future<void> battle() async{
     bool characterItem = false;
     int originalPower = character.power;
-    int usedItem = 0;
+    List<int> usedItem = [0];
 
     Monster randomMonster = await getRandomMonster();
 
@@ -40,40 +38,18 @@ class Game {
 
     while(!isTerminated){
 
-      //캐릭터의 공격 차례
-      print("\n${character.name}의 턴");
-      print("행동을 선택하세요 1: 공격 2: 방어 3: 아이템 사용");
-
-      String? inputAction = stdin.readLineSync();
-      try {
-        switch (inputAction) {
-          case '1':
-            character.attackMonster(randomMonster);
-            break;
-          case '2':
-            character.defend(randomMonster);
-            break;
-          case '3':
-            character.checkItem(characterItem);
-            usedItem ++;
-            continue;
-          default:
-            continue;
-        }
-      } catch (e) {
-        print("오류 발생: $e");
-      }
+      //캐릭터가 공격
+      characterTurn(randomMonster, characterItem, originalPower, usedItem);
 
       //몬스터가 공격
       monsterAttack(randomMonster);
       monsterTurn++;
-      monsterDefenceUp(randomMonster);
+      monsterDefenseUp(randomMonster);
 
-      if(usedItem>0){
-
+      //아이템을 사용한 경우 다시 사용할 수 없도록 설정
+      if(usedItem[0]>0){
         characterItem=true;
         character.power=originalPower;
-
       }
 
       //캐릭터가 패배 했을 경우
@@ -102,6 +78,8 @@ class Game {
                 monsterList.remove(randomMonster);
                 randomMonster =await getRandomMonster();
                 inputIncorrect = true;
+                characterItem = false;
+                usedItem[0] = 0;
                 break;
               case 'n':
                 askWriteFile();
@@ -119,16 +97,47 @@ class Game {
       }
     }
   }
-  
 
+  
+  //캐릭터 공격 메서드
+  void characterTurn(randomMonster, characterItem, originalPower, usedItem){
+    bool validInput = false;
+    while(validInput==false){
+      print("\n${character.name}의 턴");
+      print("행동을 선택하세요 1: 공격 2: 방어 3: 아이템 사용");
+
+      String? inputAction = stdin.readLineSync();
+      try {
+        switch (inputAction) {
+          case '1':
+            character.attackMonster(randomMonster);
+            validInput = true;
+          case '2':
+            character.defend(randomMonster);
+            validInput = true;
+          case '3':
+            character.checkItem(characterItem);
+            usedItem[0]++;
+          default:
+            print('다시 입력해주세요');
+        }
+      } catch (e) {
+        print("오류 발생: $e");
+      }
+
+    }
+
+
+  }
+  
   //몬스터 공격 메서드
   void monsterAttack(Monster randomMonster){
     //몬스터의 공격 차례
       print("\n${randomMonster.monName}의 턴");
       randomMonster.attackCharacter(character);
       print('\n');
-      character.showStatus();
-      randomMonster.showStatus();
+      character.showState();
+      randomMonster.showState();
       print('\n');
   }
 
@@ -147,7 +156,7 @@ class Game {
     }
     int randomNumber = random.nextInt(monsterList.length);
     print('\n새로운 몬스터가 나타났습니다.');
-    monsterList[randomNumber].showStatus();
+    monsterList[randomNumber].showState();
     return monsterList[randomNumber];
   }
 
@@ -170,7 +179,7 @@ class Game {
 
         character.hp=hp;
         character.power = power;
-        character.defence = defence;
+        character.defense = defence;
       }
     }catch (e) {
       print('파일을 읽는 중 에러 발생: $e');
@@ -257,10 +266,10 @@ class Game {
   }
 
   //3턴마다 몬스터의 방어력을 2씩 증가시켜주는 메서드
-  void monsterDefenceUp(Monster randomMonster){
+  void monsterDefenseUp(Monster randomMonster){
     if (monsterTurn%3==0){
-      randomMonster.mDefence+=2;
-      print('${randomMonster.monName}의 방어력이 증가했습니다. 현재 방어력: ${randomMonster.mDefence}');
+      randomMonster.mDefense+=2;
+      print('${randomMonster.monName}의 방어력이 증가했습니다. 현재 방어력: ${randomMonster.mDefense}');
     }
   }
 }
