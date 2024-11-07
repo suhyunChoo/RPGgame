@@ -1,3 +1,4 @@
 name,hp,power
+devil,100,7
 Joker,12,7
 Venom,8,3
