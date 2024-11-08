@@ -59,13 +59,13 @@ class Game {
   //이기고 졌는지 판단
   void judgeResult (character,randomMonster){
     //캐릭터가 졌을 경우
-    if(character.hp<0 &&randomMonster.mHp>=0){
+    if(character.hp<=0 &&randomMonster.mHp>0){
       gameResult = false;
       print('몬스터에게 졌습니다.');
       askWriteFile();
     }
     //몬스터가 졌을 경우
-    if(randomMonster.mHp<0){
+    if(randomMonster.mHp<=0){
       killedMonster ++;
         //입력이 바르게 됐는지 판단위함
         bool inputIncorrect = false;
