@@ -9,7 +9,6 @@ void main() async {
   //객체
   Game game = Game();
 
-
   while(inputCorrect==false){
     print('캐릭터의 이름을 입력하세요: ');
     String? inputName = stdin.readLineSync();
@@ -20,7 +19,6 @@ void main() async {
     }else{
       print('한글, 영문 대소문자만 입력해주세요.');
     }
-
   }
 
   // 비동기 파일 불러오기 (캐릭터와 몬스터)

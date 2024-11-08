@@ -30,7 +30,6 @@ class Game {
   Future<void> battle() async{
     bool characterItem = false;
     int originalPower = character.power;
-    List<int> usedItem = [0];
 
     Monster randomMonster = await getRandomMonster();
 
@@ -39,32 +38,36 @@ class Game {
     while(!isTerminated){
 
       //캐릭터가 공격
-      characterTurn(randomMonster, characterItem, originalPower, usedItem);
+      characterTurn(randomMonster, characterItem, originalPower);
 
       //몬스터가 공격
       monsterAttack(randomMonster);
       monsterTurn++;
+
+      //3턴마다 몬스터 방어력 증가
       monsterDefenseUp(randomMonster);
 
-      //아이템을 사용한 경우 다시 사용할 수 없도록 설정
-      if(usedItem[0]>0){
-        characterItem=true;
-        character.power=originalPower;
-      }
+      //아이템 한 번씩만 쓸 수 있게
+      character.power = originalPower;
 
-      //캐릭터가 패배 했을 경우
-      if(character.hp <= 0){
+      //결과 판단
+      judgeResult(character,randomMonster);
 
-        gameResult = false;
-        print('몬스터에게 졌습니다.');
-        askWriteFile();
+    }
+  }
 
-      }
-
-      //캐릭터가 승리 했을 경우
-      if(randomMonster.mHp <= 0 && character.hp > 0){
-  
-        killedMonster ++;
+  //이기고 졌는지 판단
+  void judgeResult (character,randomMonster){
+    //캐릭터가 졌을 경우
+    if(character.hp<0 &&randomMonster.mHp>=0){
+      gameResult = false;
+      print('몬스터에게 졌습니다.');
+      askWriteFile();
+    }
+    //몬스터가 졌을 경우
+    if(randomMonster.mHp<0){
+      killedMonster ++;
+        //입력이 바르게 됐는지 판단위함
         bool inputIncorrect = false;
         
         print("${randomMonster.monName} 를 물리쳤습니다!");
@@ -76,10 +79,8 @@ class Game {
             switch (inputString) {
               case 'y':
                 monsterList.remove(randomMonster);
-                randomMonster =await getRandomMonster();
+                randomMonster = getRandomMonster();
                 inputIncorrect = true;
-                characterItem = false;
-                usedItem[0] = 0;
                 break;
               case 'n':
                 askWriteFile();
@@ -91,16 +92,12 @@ class Game {
           } catch (e) {
             print("오류 발생: $e");
           }
-
-
         }
       }
     }
-  }
 
-  
   //캐릭터 공격 메서드
-  void characterTurn(randomMonster, characterItem, originalPower, usedItem){
+  void characterTurn(randomMonster, characterItem, originalPower){
     bool validInput = false;
     while(validInput==false){
       print("\n${character.name}의 턴");
@@ -116,18 +113,14 @@ class Game {
             character.defend(randomMonster);
             validInput = true;
           case '3':
-            character.checkItem(characterItem);
-            usedItem[0]++;
+            character.checkItem(characterItem,originalPower);
           default:
             print('다시 입력해주세요');
         }
       } catch (e) {
         print("오류 발생: $e");
       }
-
     }
-
-
   }
   
   //몬스터 공격 메서드

@@ -17,5 +17,4 @@ class Monster{
   void showState(){
     print('[$monName - 체력:$mHp 공격력:$mPower]');
   }
-
 }

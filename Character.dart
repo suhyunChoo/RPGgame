@@ -27,14 +27,15 @@ class Character{
   }
 
   //아이템 사용 여부를 확인하는 변수와 아이템 사용을 처리하는 함수
-  void checkItem(bool characterItem){
+  void checkItem(characterItem,originalPower){
     if(characterItem==false){
       //한번도 안 쓴 상태가 false, 한 번이라도 쓰면 true
-      print('아이템을 사용하여 한 턴 동안 공격력이 2배가 됩니다.');
+      print('아이템을 사용하여 한 턴 동안 공격력이 2배가 됩니다');
       power *= 2;
-
+      characterItem=true;
     }else{
-      print('아이템을 이미 사용했습니다. 더 이상 사용할 수 없습니다.');
+      print('아이템을 이미 사용하였습니다.');
+      power = originalPower;
     }
   }
 }
